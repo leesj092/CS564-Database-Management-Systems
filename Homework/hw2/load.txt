@@ -1,0 +1,13 @@
+.separator |
+
+.import Item.dat Item
+update Item set buy_price = null where buy_price = "NULL";
+
+.import User.dat User
+update User set location = null where location = "NULL"; 
+update User set country = null where country = "NULL"; 
+
+.import Bid.dat Bid
+update Bid set user_id = null where user_id = "NULL";
+
+.import itemCategory.dat ItemCategory

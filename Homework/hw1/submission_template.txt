@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 564, SPRING 2023
+        HOMEWORK 1 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries into the appropriate spots below. 
+
+        When submitting SQL queries, please do not include the initial 
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+            SJ Lee
+        </name>
+        <studentid>
+            <!-- Insert your student ID number below. -->
+	    9080213961
+        </studentid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+SELECT A.i, A.j, A.val + B.val AS val
+FROM A, B
+WHERE A.i = B.i
+AND A.j = B.j;
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+SELECT SUM(A.val * B.val) as DotProduct
+FROM A, B
+WHERE A.j = 1
+AND B.j = 2
+AND A.i = B.i;
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <answer number="1c">
+        <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
+SELECT A.i, B.j, SUM(A.val * B.val) AS val
+FROM A, B
+WHERE A.j = B.i
+GROUP BY A.i, B.j;
+        ]]><!-- End problem 1, part (c). -->
+    </answer>
+    <answer number="1d">
+        <!-- Paste your solution to problem 1, part (d) below this line. --><![CDATA[
+WITH A2 AS (SELECT * FROM A), 
+    A3 AS (SELECT A.i, A2.j, SUM(A.val*A2.val) AS val 
+           FROM A,A2
+           WHERE A.j=A2.i
+           GROUP BY A.i, A2.j)
+SELECT A.i, A3.j, SUM(A.val*A3.val) AS val 
+FROM A,A3
+WHERE A.j=A3.i
+GROUP BY A.i, A3.j;
+        ]]><!-- End problem 1, part (d). -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+WITH T AS (SELECT S.store, SUM(S.WeeklySales) AS sales
+           FROM Sales S, Holidays H
+           WHERE H.IsHoliday = 'TRUE' AND S.WeekDate = H.WeekDate
+           GROUP BY S.store)
+SELECT T.store as Store, MAX(T.sales) as AllSales
+FROM T
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+WITH AVG AS (SELECT AVG(Total) AS avgSales
+             FROM (SELECT S.WeekDate, SUM(S.WeeklySales) AS Total
+                   FROM Sales S, Holidays H
+                   WHERE H.IsHoliday = 'TRUE' AND S.WeekDate = H.WeekDate
+                   GROUP BY S.WeekDate)),
+     NH AS (SELECT S.WeekDate, SUM(S.WeeklySales) AS overall
+           FROM Sales S, Holidays H
+           WHERE H.IsHoliday = 'FALSE' AND S.WeekDate = H.WeekDate
+           GROUP BY S.WeekDate)
+SELECT COUNT(*) AS NumNonHolidays
+FROM AVG, NH
+WHERE NH.overall > AVG.avgSales;
+        ]]><!-- End problem 2, part (b). -->
+    </answer>
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
+SELECT stores.Type, SUM(sales.WeeklySales) AS TotalSales
+FROM stores, sales
+WHERE stores.store = sales.store
+AND (sales.WeekDate LIKE '%-06-%' OR sales.WeekDate LIKE '%-07-%' OR sales.WeekDate LIKE '%-08-%')
+GROUP BY stores.Type;
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a">
+        <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
+SELECT s1.B as company, s1.d as distance
+FROM streets s1
+WHERE s1.A = 'UW-Madison'
+AND s1.d <= 9
+UNION
+SELECT s2.B as company, s1.d + s2.d as distance
+FROM streets s1, streets s2
+WHERE s1.A = 'UW-Madison'
+AND s2.A = s1.B
+AND s1.d + s2.d <= 9
+AND s2.B <> 'UW-Madison'
+UNION
+SELECT s3.B as company, s1.d + s2.d + s3.d as distance
+FROM streets s1, streets s2, streets s3
+WHERE s1.A = 'UW-Madison'
+AND s2.A = s1.B
+AND s3.A = s2.B
+AND s1.d + s2.d + s3.d <= 9
+AND s2.B <> s1.A
+AND s3.B <> s2.A
+AND s2.B <> 'UW-Madison';
+        ]]><!-- End problem 3, part (a). -->
+    </answer>
+    <answer number="3b">
+        <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
+DROP VIEW IF EXISTS reaches;
+CREATE VIEW reaches AS 
+SELECT s1.B AS company, s1.d
+FROM streets s1
+WHERE s1.A = 'UW-Madison'
+AND s1.d <= 15
+UNION
+SELECT s2.B AS company, s1.d + s2.d
+FROM streets s1, streets s2
+WHERE s1.A = 'UW-Madison'
+AND s2.A = s1.B
+AND s2.B <> 'UW-Madison'
+AND s1.d + s2.d <= 15;
+
+SELECT r1.company AS company_1, r2.company AS company_2, r1.d + r2.d AS distance
+FROM reaches r1, reaches r2
+WHERE r1.company > r2.company
+AND company_1 <> company_2
+AND r1.d + r2.d <= 15;
+        ]]><!-- End problem 3, part (b). -->
+    </answer>
+    <answer number="3c">
+        <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
+SELECT s1.A AS A, s2.A AS B, s3.A AS C, s1.d + s2.d + s3.d AS distance
+FROM streets s1, streets s2, streets s3
+WHERE s2.A = s1.B
+AND s3.A = s2.B
+AND s1.A = s3.B
+AND s2.id > s1.id
+AND s1.id < s3.id
+AND s3.id > s2.id;
+        ]]><!-- End problem 3, part (c). -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+
+</pset>

@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 564, Spring 2023
+        HOMEWORK 3 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries (and potentially Python and Latex code) 
+	into the appropriate spots below. 
+
+        When submitting SQL queries, please do not include the initial 
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+SJ Lee
+            
+        </name>
+        <studentid>
+            <!-- Insert your student ID number below. -->
+9080213961
+        </studentid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+SELECT provider, COUNT(*) AS count
+FROM hospital
+GROUP BY provider
+HAVING count > 1
+
+
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+SELECT zip, COUNT(*) as count
+FROM (SELECT DISTINCT zip, state, city
+FROM hospital)
+GROUP BY zip
+HAVING count > 1;
+
+
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+answer = True
+explanation = "{A, B} is a superkey because A's closure is {A, C, D, E, F}. With B included, the closure includes all attributes."
+
+
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+answer = False
+explanation = "The decomposition is not lossless because we cannot join CDE and EFA since the common attribute E is not a key for both decompositions."
+
+
+        ]]><!-- End problem 2, part (b). -->
+    </answer>    
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
+answer = False
+explanation = "{A} -> {D} cannot be preserved with FDs {A}->{C}, {D}->{C}, and {A}->{E,F} from ABC, CDE, EFA respectively."
+
+
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <answer number="2d">
+        <!-- Paste your solution to problem 2, part (d) below this line. --><![CDATA[
+answer = True
+explanation = "First, we have {A} -> {E}. With augmentation, we have {A,F} -> {E,F}. We also have {A} -> {D} due to transitivity with {A}->{D} and {D}->{F}. Again with augmentation, we have {A,A} -> {A,F}. Since {A,A} -> {A,F} and {A,F} -> {E,F}, we finally have {A,A} -> {E,F} with transitivity which finally reduces to {A} -> {E,F}. Also, another way/reason is because {E,F} is a subset of {A}+, {A} -> {E,F} is logically implied."
+
+
+        ]]><!-- End problem 2, part (d). -->
+    </answer>
+    <answer number="2e">
+        <!-- Paste your solution to problem 2, part (e) below this line. --><![CDATA[
+answer = False
+explanation = "S is not in BCNF because there is no such key that includes B in its closure. For example, {A}->{D} is a non-trivial FD however the closure of A does not include B, which violates BCNF requirements."
+
+
+        ]]><!-- End problem 2, part (e). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a">
+        <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
+$$\rho(Conference(2 \rightarrow confname), Conference)$$
+$$\pi_{name}(\sigma_{affiliation="UW-Madison"}(Person\bowtie(Author\bowtie(Article\bowtie(\sigma_{year=2021}Conference)))))$$
+
+
+        ]]><!-- End problem 3, part (a). -->
+    </answer>
+    <answer number="3b">
+        <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
+$$\pi_{name}((\pi_{artid}(\sigma_{name="John Doe"}Person\bowtie Author)\bowtie Author)\bowtie Person) - \pi_{name}(\sigma_{name="John Doe"}Person)$$
+
+        ]]><!-- End problem 3, part (b). -->
+    </answer>
+    <answer number="3c">
+        <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
+$$\gamma_{pid, COUNT(artid)}(\sigma_{name="PODS"}(Conference \bowtie Article \bowtie Author))$$
+
+        ]]><!-- End problem 3, part (c). -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+</pset>
